@@ -1,0 +1,26 @@
+WITH session_info AS
+(
+SELECT organization, username, MAX(date_time) - MIN(date_time) AS duration_seconds, DATE_trunc('month',date_time) AS month
+FROM analysis.user_activity
+WHERE session <> ''
+    AND organization <> ''
+    [[AND {{Organization}}]]
+    AND username <> ''
+    AND (http_code IN ( 200,206,304))
+    AND (username NOT IN ('list of users'))
+    [[AND {{Period}}]]
+    group by session, organization, username, month
+)
+,
+session_info_Two AS 
+(
+SELECT Username, organization, EXTRACT(epoch FROM SUM(duration_seconds))/3600 AS Hours, month
+FROM session_info
+GROUP BY organization, Username, month
+{{snippet: 1 Min Session}}
+)
+
+SELECT Hours AS "Hours", Username as "Username", organization AS "Organization", Month as "Month",  (SUM(Hours) over (PARTITION BY organization order by month asc rows between unbounded preceding and current row)) AS "Cumulative Hours"
+FROM session_info_Two 
+GROUP BY organization, month, Hours,Username;
+        

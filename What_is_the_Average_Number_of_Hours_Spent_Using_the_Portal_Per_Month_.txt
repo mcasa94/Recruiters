@@ -1,0 +1,23 @@
+
+WITH session_info AS
+(
+SELECT session, date_trunc('month',date_time) AS month, MAX(date_time) - MIN(date_time) AS duration_seconds
+FROM analysis.user_activity
+WHERE session <> ''
+    AND organization <> ''
+    AND username <> ''
+    AND (http_code IN ( 200,206,304))
+    AND (username NOT IN ('smclaughlin@vtti.vt.edu','vwilliams@vtti.vt.edu','mmollenhauer@vtti.vt.edu', 'mchaka@vtti.vt.edu', 'gali@vtti.vt.edu'))
+    AND(date_trunc('month', CAST("analysis"."user_activity"."date_time" AS timestamp)) BETWEEN date_trunc('month', CAST((CAST(now() AS timestamp) + (INTERVAL '-30 month')) AS timestamp))
+    AND date_trunc('month', CAST((CAST(now() AS timestamp) + (INTERVAL '-1 month')) AS timestamp)))
+    group by session, month
+)
+SELECT SUM(hours)/COUNT(month) AS average_hours_month
+FROM
+    (SELECT
+     
+        month, EXTRACT(epoch FROM SUM(duration_seconds))/3600 AS hours
+        FROM session_info 
+        GROUP BY month
+
+    ) avg

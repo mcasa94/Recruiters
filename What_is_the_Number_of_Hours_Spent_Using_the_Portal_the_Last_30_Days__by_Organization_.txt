@@ -1,0 +1,18 @@
+
+WITH session_info AS
+(
+SELECT organization, DATE_PART('month',date_time) AS month, username, MAX(date_time) - MIN(date_time) AS duration_seconds
+FROM analysis.user_activity
+WHERE session <> ''
+    AND organization <> ''
+    AND username <> ''
+    AND (http_code IN ( 200,206,304))
+    AND (username NOT IN ('smclaughlin@vtti.vt.edu','vwilliams@vtti.vt.edu','mmollenhauer@vtti.vt.edu', 'mchaka@vtti.vt.edu', 'gali@vtti.vt.edu'))
+    AND CAST("analysis"."user_activity"."date_time" AS date) BETWEEN CAST((CAST(now() AS timestamp) + (INTERVAL '-30 day')) AS date)
+    AND CAST(now() AS date)
+    group by session, organization, username, month
+)
+SELECT organization AS "Organization", EXTRACT(epoch FROM SUM(duration_seconds))/3600 AS "Hours" 
+FROM session_info 
+GROUP BY organization
+ORDER BY "Hours" DESC;
