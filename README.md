@@ -1,8 +1,8 @@
 # Recruiters
-If you are a recruiter looking for programs written by Matthew C, look here. This repo contains a mix of code written or modified by Matthew in a variety of languages. 
+These files are programs and code developed by Matthew C. and are for showcasing work exemples demonstrating proficiency in a variety of languages, including Python, R, and SQL. 
 Python:
   - Live Stock Tracker (jupyter lab and raw python file types). Written by Matthew, continuously monitors stock ticker(s) input by a user and outputs their price to a CSV file.
-  - StonksDB - Full program written to manage a stock database. Allows the user to enter stocks into a database and record how many shares, at what price they purchased, and on what date it was purchased. Also allows user to read, edit, and delete entries as well as stock data collected. 
+  - StonksDB - Full program written to manage a stock database hoseted in a local SQL instance. Allows the user to enter stocks into a database and record how many shares, at what price they purchased, and on what date it was purchased. Also allows user to read, edit, and delete entries as well as stock data collected. 
 
 R:
   - Outlier KD - Not fully written, but heavily modified by Matthew. Intakes a dataet and analyzes the data to look for outliers. Prompts the user if outliers are found to replace their values wiht NA. 
